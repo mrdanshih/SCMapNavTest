@@ -21,23 +21,25 @@ public class Test {
         
         
         //Assume Zone 1
-        String[] list = {"H","J","I"};
-        Zone zone1 = new Zone(list);
+        PrimaryExit[] zone1Primaries = {new PrimaryExit("H", ""), new PrimaryExit("J",""), new PrimaryExit("I","")};
+        PrimaryExit[] zone1Secondaries = {new PrimaryExit("H", ""), new PrimaryExit("J",""), new PrimaryExit("I","")};
+        
+        Zone zone1 = new Zone(zone1Primaries, zone1Primaries);
          
         String bestNode = "";
         double lowestCost = 123456789;
         
         //Look at every node associated with the Zone
-        for(String exitNode: zone1.getNodes()){
+        for(PrimaryExit exitNode: zone1.getPrimaryExits()){
             //Test w/ algorithm each node as a starting point to same destination
-            double currentCost = map.costFromTo(exitNode, endNode);
+            double currentCost = map.costFromTo(exitNode.getStrId(), endNode);
             
             //Compares if current node is less costlier
             if ( currentCost < lowestCost){
                 lowestCost = currentCost;
                 
                 //Sets best node
-                bestNode = exitNode;
+                bestNode = exitNode.getStrId();
             }
         }    
         
@@ -48,10 +50,12 @@ public class Test {
 }
 
 class Searcher {
-    HipsterGraph<String,Double> graph;
+    GraphBuilder<String,Double> graphTemplate;
+    
+    HipsterGraph<String,Double> graph; 
     
     public Searcher(){
-        graph = GraphBuilder.<String,Double>create()
+        graphTemplate = GraphBuilder.<String,Double>create()
             //All edge values in feet.
             .connect("A").to("B").withEdge(40d)
             .connect("B").to("C").withEdge(15d)
@@ -65,8 +69,17 @@ class Searcher {
             .connect("H").to("I").withEdge(18d)    
             .connect("H").to("J").withEdge(16d)
             .connect("I").to("J").withEdge(8d)
-            .connect("J").to("A").withEdge(65d)  
-            .createUndirectedGraph();
+            .connect("J").to("A").withEdge(65d);   
+    }
+    
+    //Above and below methods allow us to add relevant secondary exits to the graph without fully rebuilding
+    //the primay exits into the graph when they will always be there anyway 
+    
+    //WORK IN PROGRESS
+    
+    public void setGraph(String a, String b, double edgeValue){
+        graph = graphTemplate.connect(a).to(b).withEdge(edgeValue).createUndirectedGraph();
+        
     }
     
     public double costFromTo(String start, String end){

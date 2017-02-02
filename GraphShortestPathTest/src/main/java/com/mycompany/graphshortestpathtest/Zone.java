@@ -10,13 +10,18 @@ package com.mycompany.graphshortestpathtest;
  * @author dzshih
  */
 public class Zone {
-    private String[] nodes;
+    private PrimaryExit[] primaryExits, secondaryExits;
     
-    public Zone(String[] nodes){
-        this.nodes = nodes;
+    public Zone(PrimaryExit[] primaryExits, PrimaryExit[] secondaryExits ){
+        this.primaryExits = primaryExits;
+        this.secondaryExits = secondaryExits;
     }
     
-    public String[] getNodes(){
-        return nodes;
+    public PrimaryExit[] getPrimaryExits(){
+        return primaryExits;
+    }
+    
+    public PrimaryExit[] getSecondaryExits(){
+        return secondaryExits;
     }
 }
