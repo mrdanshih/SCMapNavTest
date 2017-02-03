@@ -14,21 +14,28 @@ public class Searcher {
     HipsterGraph<String,Double> graph; 
     
     public Searcher(){
+//        graphTemplate = GraphBuilder.<String,Double>create()
+//            //All edge values in feet.
+//            .connect("A").to("B").withEdge(40d)
+//            .connect("B").to("C").withEdge(15d)
+//            .connect("B").to("D").withEdge(18d)
+//            .connect("C").to("D").withEdge(16d)
+//            .connect("D").to("E").withEdge(36d)
+//            .connect("E").to("F").withEdge(40d)
+//            .connect("E").to("G").withEdge(36d)
+//            .connect("F").to("G").withEdge(10d)
+//            .connect("G").to("H").withEdge(38d)
+//            .connect("H").to("I").withEdge(18d)    
+//            .connect("H").to("J").withEdge(16d)
+//            .connect("I").to("J").withEdge(8d)
+//            .connect("J").to("A").withEdge(65d);   
         graphTemplate = GraphBuilder.<String,Double>create()
             //All edge values in feet.
-            .connect("A").to("B").withEdge(40d)
-            .connect("B").to("C").withEdge(15d)
-            .connect("B").to("D").withEdge(18d)
-            .connect("C").to("D").withEdge(16d)
-            .connect("D").to("E").withEdge(36d)
-            .connect("E").to("F").withEdge(40d)
-            .connect("E").to("G").withEdge(36d)
-            .connect("F").to("G").withEdge(10d)
-            .connect("G").to("H").withEdge(38d)
-            .connect("H").to("I").withEdge(18d)    
-            .connect("H").to("J").withEdge(16d)
-            .connect("I").to("J").withEdge(8d)
-            .connect("J").to("A").withEdge(65d);   
+            .connect("A").to("B").withEdge(10d)
+            .connect("B").to("C").withEdge(12d)
+            .connect("C").to("D").withEdge(14d)
+            .connect("D").to("E").withEdge(4d)
+            .connect("E").to("A").withEdge(12d);
     }
     
     //Above and below methods allow us to add relevant secondary exits to the graph without fully rebuilding

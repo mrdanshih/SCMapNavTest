@@ -40,7 +40,7 @@ public class SecondaryExit{
         return locationName;
     }
     
-    public HashMap getFromToPrimaryMap(){
+    public HashMap<PrimaryExit, Double> getFromToPrimaryMap(){
         return toPrimaryMap;
     }
     
@@ -52,7 +52,7 @@ public class SecondaryExit{
             result += "\n --> distance to " + entry.getKey() + " = " + entry.getValue();
         }
         
-        return result;
+        return result + "\n";
     }
    
     

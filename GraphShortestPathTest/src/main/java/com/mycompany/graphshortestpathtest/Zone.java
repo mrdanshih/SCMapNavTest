@@ -19,6 +19,10 @@ public class Zone {
         this.secondaryExits = secondaryExits;
     }
     
+    public Zone(PrimaryExit[] primaryExits){
+        this.primaryExits = primaryExits;
+    }
+    
     public PrimaryExit[] getPrimaryExits(){
         return primaryExits;
     }
@@ -34,10 +38,12 @@ public class Zone {
             result += primary + ", ";
         }
         
-        result += "\n\n SECONDARIES:\n";
+        result += "\n\nSECONDARIES:\n";
         
-        for(SecondaryExit secondary: secondaryExits){
-            result += secondary + ", ";
+        if(secondaryExits != null){
+            for(SecondaryExit secondary: secondaryExits){
+                result += secondary;
+            }
         }
         
         return result;
