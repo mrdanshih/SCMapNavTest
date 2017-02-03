@@ -4,31 +4,27 @@
  * and open the template in the editor.
  */
 package com.mycompany.graphshortestpathtest;
-
+import java.util.ArrayList;
 /**
  *
  * @author dzshih
  */
 public class PrimaryExit { 
-    private int id; 
+    //Identifier for the primary exit, and a description for it?? (necessary to have both?)
     private String strId, description;
     
-    public PrimaryExit(int id, String description){
-        this.id = id;
-        this.description = description;
-    
-    }
     
     public PrimaryExit(String id, String description){
         this.strId = id;
         this.description = description;
     }
     
-    public int getId(){
-        return id;
+    public PrimaryExit(String id){
+        this.strId = id;
     }
     
-    public String getStrId(){
+    
+    public String getId(){
         return strId;
     }
     
@@ -36,10 +32,12 @@ public class PrimaryExit {
         return description;
     }
     
-    
-    public void setId(int newId){
-        id = newId;
+    @Override
+    public String toString(){
+        return "PRIMARY: " + strId;
     }
+    
+   
     
     public void setStrId(String newId){
         strId = newId;

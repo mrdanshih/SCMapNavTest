@@ -11,9 +11,10 @@ package com.mycompany.graphshortestpathtest;
  */
 public class Zone {
     //Each Zone should know it's own primary exits and secondary exits.
-    private PrimaryExit[] primaryExits, secondaryExits;
+    private PrimaryExit[] primaryExits;
+    private SecondaryExit[] secondaryExits;
     
-    public Zone(PrimaryExit[] primaryExits, PrimaryExit[] secondaryExits ){
+    public Zone(PrimaryExit[] primaryExits, SecondaryExit[] secondaryExits){
         this.primaryExits = primaryExits;
         this.secondaryExits = secondaryExits;
     }
@@ -22,7 +23,24 @@ public class Zone {
         return primaryExits;
     }
     
-    public PrimaryExit[] getSecondaryExits(){
+    public SecondaryExit[] getSecondaryExits(){
         return secondaryExits;
+    }
+    
+    @Override
+    public String toString(){
+        String result = "PRIMARIES:\n";
+        for(PrimaryExit primary: primaryExits){
+            result += primary + ", ";
+        }
+        
+        result += "\n\n SECONDARIES:\n";
+        
+        for(SecondaryExit secondary: secondaryExits){
+            result += secondary + ", ";
+        }
+        
+        return result;
+        
     }
 }

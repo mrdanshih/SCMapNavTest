@@ -1,3 +1,5 @@
+package com.mycompany.graphshortestpathtest;
+
 import es.usc.citius.hipster.algorithm.Hipster;
 import es.usc.citius.hipster.graph.GraphBuilder;
 import es.usc.citius.hipster.graph.GraphSearchProblem;
@@ -35,7 +37,7 @@ public class Searcher {
     //WORK IN PROGRESS
     
     //This is for adding additional nodes to the graph.
-    public void setGraph(String a, String b, double edgeValue){
+    public void addToGraph(String a, String b, double edgeValue){
         graphTemplate.connect(a).to(b).withEdge(edgeValue);
         
         graph = graphTemplate.createUndirectedGraph();
