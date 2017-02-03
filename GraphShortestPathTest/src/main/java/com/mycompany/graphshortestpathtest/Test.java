@@ -8,7 +8,7 @@ import es.usc.citius.hipster.algorithm.Hipster;
 import es.usc.citius.hipster.graph.*;
 import es.usc.citius.hipster.model.impl.WeightedNode;
 import es.usc.citius.hipster.model.problem.SearchProblem;
-
+import java.util.*;
 /**
  *
  * @author dzshih
@@ -17,12 +17,11 @@ public class Test {
     public static void main(String[] args){
         Searcher map = new Searcher();
         
-        String endNode = "G";
-        
+        String endNode = "D";
         
         //Assume Zone 1
         PrimaryExit[] zone1Primaries = {new PrimaryExit("H", ""), new PrimaryExit("J",""), new PrimaryExit("I","")};
-        PrimaryExit[] zone1Secondaries = {new PrimaryExit("H", ""), new PrimaryExit("J",""), new PrimaryExit("I","")};
+        //PrimaryExit[] zone1Secondaries = {new PrimaryExit("H", ""), new PrimaryExit("J",""), new PrimaryExit("I","")};
         
         Zone zone1 = new Zone(zone1Primaries, zone1Primaries);
          
@@ -44,7 +43,10 @@ public class Test {
         }    
         
         //Searches with the best node
-        map.searchFromTo(bestNode, endNode);
+        //LINKED LIST
+        System.out.println(lowestCost);
+        ArrayList<LinkedList<String>> paths = (ArrayList) map.searchFromTo(bestNode, endNode);
+        System.out.println(paths.get(0));
  
     }
 }
@@ -77,12 +79,19 @@ class Searcher {
     
     //WORK IN PROGRESS
     
+    //This is for adding additional nodes to the graph.
     public void setGraph(String a, String b, double edgeValue){
-        graph = graphTemplate.connect(a).to(b).withEdge(edgeValue).createUndirectedGraph();
+        graphTemplate.connect(a).to(b).withEdge(edgeValue);
+        
+        graph = graphTemplate.createUndirectedGraph();
         
     }
     
     public double costFromTo(String start, String end){
+        if (graph == null){
+            graph = graphTemplate.createUndirectedGraph();
+        }
+            
         SearchProblem problem = GraphSearchProblem
                                 .startingFrom(start)
                                 .in(graph)
@@ -92,13 +101,18 @@ class Searcher {
         return (double) (node.getCost());
     }
     
-    public void searchFromTo(String start, String end){
+    public List searchFromTo(String start, String end){
+        if (graph == null){
+            graph = graphTemplate.createUndirectedGraph();
+        }
+        
         SearchProblem problem = GraphSearchProblem
                                 .startingFrom(start)
                                 .in(graph)
                                 .takeCostsFromEdges()
                                 .build();
-        System.out.println(Hipster.createDijkstra(problem).search(end).getOptimalPaths());
+
+        return Hipster.createDijkstra(problem).search(end).getOptimalPaths();
     }
     
     

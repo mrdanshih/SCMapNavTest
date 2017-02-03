@@ -10,6 +10,7 @@ package com.mycompany.graphshortestpathtest;
  * @author dzshih
  */
 public class Zone {
+    //Each Zone should know it's own primary exits and secondary exits.
     private PrimaryExit[] primaryExits, secondaryExits;
     
     public Zone(PrimaryExit[] primaryExits, PrimaryExit[] secondaryExits ){
