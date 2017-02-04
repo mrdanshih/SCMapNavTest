@@ -9,11 +9,15 @@ import es.usc.citius.hipster.model.problem.SearchProblem;
 import java.util.List;
 
 public class Searcher {
-    GraphBuilder<String,Double> graphTemplate;
+    private final GraphBuilder<String,Double> graphTemplate;
     
-    HipsterGraph<String,Double> graph; 
+    private HipsterGraph<String,Double> graph; 
     
     public Searcher(){
+        /*Take in a list of Zones, 
+         * which shall contain primary exits and secondary exits.
+         */
+        
 //        graphTemplate = GraphBuilder.<String,Double>create()
 //            //All edge values in feet.
 //            .connect("A").to("B").withEdge(40d)
@@ -29,6 +33,11 @@ public class Searcher {
 //            .connect("H").to("J").withEdge(16d)
 //            .connect("I").to("J").withEdge(8d)
 //            .connect("J").to("A").withEdge(65d);   
+
+        /* Builds a temporary hard coded graph for the primary exits within a building. 
+         * This graph template will ALWAYS be the base graph for any search. 
+         * Before a search can be performed, this graphTemplate MUST be built.
+         */
         graphTemplate = GraphBuilder.<String,Double>create()
             //All edge values in feet.
             .connect("A").to("B").withEdge(10d)
@@ -44,14 +53,26 @@ public class Searcher {
     //WORK IN PROGRESS
     
     //This is for adding additional nodes to the graph.
-    public void addToGraph(String a, String b, double edgeValue){
+    public void addEdgeToGraph(String a, String b, double edgeValue){
+        /*
+         * Adds one additional edge (start, end, value) to the graphTemplate
+         */
         graphTemplate.connect(a).to(b).withEdge(edgeValue);
-        
+    }
+    
+    public void buildGraph(){
+        /*
+         * Should be called whenever a user is ready to use the graph.
+         * Builds whatever is in the graph template into a usable graph.
+         * The built graph is then ready to be used in a search.
+         */
         graph = graphTemplate.createUndirectedGraph();
-        
     }
     
     public double costFromTo(String start, String end){
+        /*
+         * Computes the cost of a the shortest path from the start node to the end node
+         */
         if (graph == null){
             graph = graphTemplate.createUndirectedGraph();
         }
@@ -66,6 +87,12 @@ public class Searcher {
     }
     
     public List searchFromTo(String start, String end){
+        /*
+         * Returns a list of shortest paths (if there is more than one best one),
+         * containing lists with the individual steps/nodes along that path,
+         * from the start node to the end node
+         */
+        
         if (graph == null){
             graph = graphTemplate.createUndirectedGraph();
         }
