@@ -18,33 +18,33 @@ public class Searcher {
          * which shall contain primary exits and secondary exits.
          */
         
-//        graphTemplate = GraphBuilder.<String,Double>create()
-//            //All edge values in feet.
-//            .connect("A").to("B").withEdge(40d)
-//            .connect("B").to("C").withEdge(15d)
-//            .connect("B").to("D").withEdge(18d)
-//            .connect("C").to("D").withEdge(16d)
-//            .connect("D").to("E").withEdge(36d)
-//            .connect("E").to("F").withEdge(40d)
-//            .connect("E").to("G").withEdge(36d)
-//            .connect("F").to("G").withEdge(10d)
-//            .connect("G").to("H").withEdge(38d)
-//            .connect("H").to("I").withEdge(18d)    
-//            .connect("H").to("J").withEdge(16d)
-//            .connect("I").to("J").withEdge(8d)
-//            .connect("J").to("A").withEdge(65d);   
+        graphTemplate = GraphBuilder.<String,Double>create()
+           //All edge values in feet.
+            .connect("P1").to("P2").withEdge(40d)
+            .connect("P2").to("P3").withEdge(15d)
+            .connect("P2").to("P4").withEdge(18d)
+            .connect("P3").to("P4").withEdge(16d)
+            .connect("P4").to("P5").withEdge(36d)
+            .connect("P5").to("P6").withEdge(40d)
+            .connect("P5").to("P7").withEdge(36d)
+            .connect("P6").to("P7").withEdge(10d)
+            .connect("P7").to("P8").withEdge(38d)
+            .connect("P8").to("P9").withEdge(18d)    
+            .connect("P8").to("P10").withEdge(16d)
+            .connect("P9").to("P10").withEdge(8d)
+            .connect("P10").to("P1").withEdge(65d);   
 
         /* Builds a temporary hard coded graph for the primary exits within a building. 
          * This graph template will ALWAYS be the base graph for any search. 
          * Before a search can be performed, this graphTemplate MUST be built.
          */
-        graphTemplate = GraphBuilder.<String,Double>create()
+       /* graphTemplate = GraphBuilder.<String,Double>create()
             //All edge values in feet.
             .connect("A").to("B").withEdge(10d)
             .connect("B").to("C").withEdge(12d)
             .connect("C").to("D").withEdge(14d)
             .connect("D").to("E").withEdge(4d)
-            .connect("E").to("A").withEdge(12d);
+            .connect("E").to("A").withEdge(12d);*/
     }
     
     //Above and below methods allow us to add relevant secondary exits to the graph without fully rebuilding
