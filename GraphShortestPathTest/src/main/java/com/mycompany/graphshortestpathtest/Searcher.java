@@ -38,13 +38,13 @@ public class Searcher {
          * This graph template will ALWAYS be the base graph for any search. 
          * Before a search can be performed, this graphTemplate MUST be built.
          */
-       /* graphTemplate = GraphBuilder.<String,Double>create()
-            //All edge values in feet.
-            .connect("A").to("B").withEdge(10d)
-            .connect("B").to("C").withEdge(12d)
-            .connect("C").to("D").withEdge(14d)
-            .connect("D").to("E").withEdge(4d)
-            .connect("E").to("A").withEdge(12d);*/
+//       graphTemplate = GraphBuilder.<String,Double>create()
+//            //All edge values in feet.
+//            .connect("A").to("B").withEdge(10d)
+//            .connect("B").to("C").withEdge(12d)
+//            .connect("C").to("D").withEdge(14d)
+//            .connect("D").to("E").withEdge(4d)
+//            .connect("E").to("A").withEdge(12d);
     }
     
     //Above and below methods allow us to add relevant secondary exits to the graph without fully rebuilding

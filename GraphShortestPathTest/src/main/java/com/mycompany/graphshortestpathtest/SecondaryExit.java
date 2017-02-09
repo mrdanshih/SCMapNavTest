@@ -11,7 +11,7 @@ import java.util.HashMap;
  */
 public class SecondaryExit{
     //Keeps track of the distances it is from a primary exit.
-    
+    private String id;
     //Name of the physical location that this exit leads to
     private String locationName;
     
@@ -19,12 +19,14 @@ public class SecondaryExit{
     private HashMap<PrimaryExit, Double> toPrimaryMap;
     
     
-    public SecondaryExit(String locationName, HashMap<PrimaryExit, Double> toPrimaryMap){
+    public SecondaryExit(String id, String locationName, HashMap<PrimaryExit, Double> toPrimaryMap){
+        this.id = id;
         this.locationName = locationName;
         this.toPrimaryMap = toPrimaryMap;
     }
     
-    public SecondaryExit(String locationName, Object[] initiationList){
+    public SecondaryExit(String id, String locationName, Object[] initiationList){
+        this.id = id;
         this.locationName = locationName;
         toPrimaryMap = new HashMap<>();
         
@@ -38,6 +40,11 @@ public class SecondaryExit{
     public String getLocationName(){
         return locationName;
     }
+    
+    public String getId(){
+        return id;
+    }
+    
     
     public HashMap<PrimaryExit, Double> getFromToPrimaryMap(){
         return toPrimaryMap;

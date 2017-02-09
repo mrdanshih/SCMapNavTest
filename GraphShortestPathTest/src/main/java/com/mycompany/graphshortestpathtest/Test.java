@@ -15,9 +15,10 @@ public class Test {
         //Searches with the best node
         
         //LINKED LIST
-        String startZone = "Zone 4";
-        String userSearch = "Panda Express";
-   
+        String startZone = "Zone 5";
+        String userSearch = "Computer Lab Side";
+        //If you search for same name/ multiple secondary exits to same destination, doesn't return shortest path. Find way to fix?????
+        
         ArrayList<LinkedList<String>> paths = (ArrayList) simulator.getDirections(startZone, userSearch);
         System.out.println(paths.get(0));
  
