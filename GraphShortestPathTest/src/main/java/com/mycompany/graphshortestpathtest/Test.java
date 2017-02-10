@@ -16,7 +16,7 @@ public class Test {
         
         //LINKED LIST
         String startZone = "Zone 1";
-        String userSearch = "Computer Lab";
+        String userSearch = "Newspaper";
         //If you search for same name/ multiple secondary exits to same destination, doesn't return shortest path. Find way to fix?????
         System.out.println("START: " + startZone + " END: " + userSearch);
         

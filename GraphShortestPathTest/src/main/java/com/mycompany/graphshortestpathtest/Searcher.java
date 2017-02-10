@@ -32,7 +32,7 @@ public class Searcher {
             .connect("P8").to("P9").withEdge(18d)    
             .connect("P8").to("P10").withEdge(16d)
             .connect("P9").to("P10").withEdge(8d)
-            .connect("P10").to("P1").withEdge(65d);   
+            .connect("P10").to("P1").withEdge(65d);
 
         /* Builds a temporary hard coded graph for the primary exits within a building. 
          * This graph template will ALWAYS be the base graph for any search. 

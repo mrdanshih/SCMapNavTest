@@ -53,7 +53,7 @@ public class IndoorSearchSimulator{
 
       //Setting up a secondary exit (physical destination) with associated primaries
       Object[] S2Primaries = {P2, 10.0, P3, 7.0, P4, 15.0};
-      SecondaryExit S2 = new SecondaryExit("S2", "Newspaper Main", S2Primaries);
+      SecondaryExit S2 = new SecondaryExit("S2", "Newspaper", S2Primaries);
       
       Object[] S3Primaries = {P2, 12.0, P3, 15.0, P4, 5.0};
       SecondaryExit S3 = new SecondaryExit("S3", "Computer Lab", S3Primaries);
@@ -71,7 +71,7 @@ public class IndoorSearchSimulator{
       
       //Secondaries in Zone 3
       Object[] S4Primaries = {P4, 33.0, P5, 11.0};
-      SecondaryExit S4 = new SecondaryExit("S4", "Newspaper Side", S4Primaries);
+      SecondaryExit S4 = new SecondaryExit("S4", "Newspaper", S4Primaries);
       
       SecondaryExit[] zone3Secondaries = {S4};
       Zone zone3 = new Zone(zone3Primaries, zone3Secondaries);
@@ -88,7 +88,7 @@ public class IndoorSearchSimulator{
       SecondaryExit S5 = new SecondaryExit("S5", "Computer Lab", S5Primaries);
       
       Object[] S6Primaries = {P5, 27.0, P6, 20.0, P7, 15.0};
-      SecondaryExit S6 = new SecondaryExit("S6", "Bathroom", S6Primaries);
+      SecondaryExit S6 = new SecondaryExit("S6", "Restroom", S6Primaries);
       
       Object[] S7Primaries = {P5, 70.0, P6, 18.0, P7, 22.0};
       SecondaryExit S7 = new SecondaryExit("S7", "Operations", S7Primaries);
@@ -176,25 +176,14 @@ public class IndoorSearchSimulator{
         */
         Zone startZone;
         
-        if(detectedStartZone.equals("Zone 1")){
-            startZone = zone1;
-        }else if(detectedStartZone.equals("Zone 2")){
-            startZone = zone2;
-        }else if(detectedStartZone.equals("Zone 3")){
-            startZone = zone3;
-        }else if(detectedStartZone.equals("Zone 4")){
-            startZone = zone4;
-        }else if(detectedStartZone.equals("Zone 5")){
-            startZone = zone5;
-        }else if(detectedStartZone.equals("Zone 6")){
-            startZone = zone6;    
-        }else if(detectedStartZone.equals("Zone 7")){
-            startZone = zone7;
-        }else if(detectedStartZone.equals("Zone 8")){
-            startZone = zone8;
+        int startZoneNumber = Character.getNumericValue(detectedStartZone.charAt(detectedStartZone.length() - 1));
+        
+        if(startZoneNumber >= 1 && startZoneNumber <= 8){
+            startZone = listOfZones[startZoneNumber - 1];
         }else{
-            throw new Exception(detectedStartZone + ": ZONE NOT FOUND");
+            throw new Exception("START ZONE INVALID");
         }
+        
       
 //        String endNode = prepareUserSearchAndGetEndNode(userSearch);
 //        String bestStartNodeInZone = getBestStartNode(startZone, endNode);
@@ -268,6 +257,12 @@ public class IndoorSearchSimulator{
                        String endNodeId = secondary.getId();
                        System.out.println("A corresponding secondary is: " + endNodeId);
                        
+                       /*Add connections to this secondary to the map, and build it. 
+                        *This method will build a new map everytime with just the connections
+                        *to the secondary that it's checking right now.
+                        */
+                       finishBuildingMap(secondary);
+                       
                        /*Find the best start node (in the start Zone) to use to get 
                          to the secondary exit currently being checked.
                          
@@ -279,19 +274,13 @@ public class IndoorSearchSimulator{
                        
                        System.out.println("It's best to start from: " + zoneStartNode);
                        
-                       /*Add connections to this secondary to the map, and build it. 
-                        *This method will build a new map everytime with just the connections
-                        *to the secondary that it's checking right now.
-                        */
-                       finishBuildingMap(secondary);
-                       
                        /*Now find the cost from the start node to the end node
                         *Get and save the cost it would take using the path from 
                         *the best start node in the Zone to the current secondary exit being
                         *examined.
                        */
                        double costUsingCurrentSecondary = map.costFromTo(zoneStartNode, endNodeId);
-                       System.out.println("The from " + zoneStartNode + " to " + endNodeId + " is " + costUsingCurrentSecondary);
+                       System.out.println("Cost from " + zoneStartNode + " to " + endNodeId + " is " + costUsingCurrentSecondary);
                        
                        
                        /* If the path leading to the destination would be shorter than
@@ -330,6 +319,7 @@ public class IndoorSearchSimulator{
     private void finishBuildingMap(SecondaryExit secondary){
         for(HashMap.Entry entry: secondary.getFromToPrimaryMap().entrySet()){
             map.addEdgeToGraph(secondary.getId(), ((PrimaryExit) entry.getKey()).getId(), (double) entry.getValue());                     
+            
         }
         map.buildGraph();
     } 
