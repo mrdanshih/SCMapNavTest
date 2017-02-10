@@ -56,7 +56,7 @@ public class IndoorSearchSimulator{
       SecondaryExit S2 = new SecondaryExit("S2", "Newspaper Main", S2Primaries);
       
       Object[] S3Primaries = {P2, 12.0, P3, 15.0, P4, 5.0};
-      SecondaryExit S3 = new SecondaryExit("S3", "Computer Lab Main", S3Primaries);
+      SecondaryExit S3 = new SecondaryExit("S3", "Computer Lab", S3Primaries);
       
 
       SecondaryExit[] zone2Secondaries = {S2, S3};
@@ -85,7 +85,7 @@ public class IndoorSearchSimulator{
 
       //Setting up a secondary exit (physical destination) with associated primaries
       Object[] S5Primaries = {P5, 8.0, P6, 36.0, P7, 34.0};
-      SecondaryExit S5 = new SecondaryExit("S5", "Computer Lab Side", S5Primaries);
+      SecondaryExit S5 = new SecondaryExit("S5", "Computer Lab", S5Primaries);
       
       Object[] S6Primaries = {P5, 27.0, P6, 20.0, P7, 15.0};
       SecondaryExit S6 = new SecondaryExit("S6", "Bathroom", S6Primaries);
@@ -149,7 +149,7 @@ public class IndoorSearchSimulator{
       SecondaryExit S13 = new SecondaryExit("S13", "Courtyard Study Lounge", S13Primaries);
       
       Object[] S14Primaries = {P10, 27.0, P1, 41.0};
-      SecondaryExit S14 = new SecondaryExit("S14", "Computer Lab Courtyard", S14Primaries);
+      SecondaryExit S14 = new SecondaryExit("S14", "Computer Lab", S14Primaries);
 
       SecondaryExit[] zone8Secondaries = {S13, S14};
       Zone zone8 = new Zone(zone8Primaries, zone8Secondaries);    
@@ -196,13 +196,144 @@ public class IndoorSearchSimulator{
             throw new Exception(detectedStartZone + ": ZONE NOT FOUND");
         }
       
-        String endNode = prepareUserSearchAndGetEndNode(userSearch);
-        String bestStartNodeInZone = getBestStartNode(startZone, endNode);
+//        String endNode = prepareUserSearchAndGetEndNode(userSearch);
+//        String bestStartNodeInZone = getBestStartNode(startZone, endNode);
         
-        return map.searchFromTo(bestStartNodeInZone, endNode);
+        StartEndStringPair fromToPair = prepareSearchAndGetStartEndNodes(startZone, userSearch);
+        return map.searchFromTo(fromToPair.startNode, fromToPair.endNode);
 
     }
     
+     private StartEndStringPair prepareSearchAndGetStartEndNodes(Zone startZone, String userSearch) throws Exception{
+        /* The following method implements an algorithm that is designed to find two things (returns these):
+           1. The best PRIMARY exit node that a user should take out of a Zone to a destination (starting point of path)
+           2. What SECONDARY exit would get a user to their destination the quickest. 
+              Because some areas may have MULTIPLE entries/exits (the Computer Lab, for example),
+              the app needs to recognize that there are multiple ways to get to the same destination.
+              
+              The algorithm implemented here accounts for that.
+           
+           Overall...
+           1. It takes in the START ZONE a user is in, and the String parameter for the user's search.
+           2. Considers all the secondary exits that corresponds to the user's destination, 
+              and finds what start and end nodes are best to use to get from START ZONE to User's Destination,
+              taking into account that there are multiple ways to a destination.
+         
+           What the algorithm does (specifics):
+           Keep track of a the BEST STARTING NODE, BEST SECONDARY EXIT, and BEST COST (aka shortest way to get from A-->B)
+           
+           For every zone in the building:
+             For every secondary exit in the Zone:
+               If a secondary exit leads to the user's destination:
+                 Find the best start node in the Zone to this secondary exit.
+         
+                 If the total distance taken using the path from this best start node
+                 to the destination via this secondary exit is lower than
+                 the distance using the current best path.... 
+                (the current best path might use a different STARTING NODE 
+                 and uses a different SECONDARY EXIT to the same destination)
+                    Update the BEST STARTING NODE, SECONDARY EXIT, AND COST to these.
+               
+            In the end, return the BEST START NODE and BEST SECONDARY EXIT
+         
+         */
+        
+         /* Does two things:
+         * 1. Takes in the physical name of a location a USER would search for,
+         * and returns the ID of the end secondary exit that the location
+         * corresponds to. 
+         * 
+         * 2. Completes the building of the Searcher object, by finishing
+         * the building of the map. The method adds to the map the relevant
+         * end secondary exit (and the edges to connecting primary exits)
+         * for the destination location. Finally, it builds the undirected map by 
+         * calling the relevant method in the Searcher object.
+        
+         * The returned result is a node name that is on the graph.
+
+        */
+        
+        String bestStartNode = "";
+        SecondaryExit bestMatchingSecondary = null;
+        double bestCost = 999999;
+        
+        for(Zone zone: listOfZones){
+           if(zone.getSecondaryExits() != null){
+               
+               for(SecondaryExit secondary: zone.getSecondaryExits()){
+                   String secondaryPhysicalLocation = secondary.getLocationName();
+                  
+                   if(secondaryPhysicalLocation.equals(userSearch)){
+                       //Found a secondary exit node that leads to the destination
+                       String endNodeId = secondary.getId();
+                       System.out.println("A corresponding secondary is: " + endNodeId);
+                       
+                       /*Find the best start node (in the start Zone) to use to get 
+                         to the secondary exit currently being checked.
+                         
+                         Depending on WHICH secondary exit is being checked, the best
+                         start node in the same Zone may change. Thus, this needs to be
+                         redone for EVERY secondary exit that matches the physical destination.
+                       */
+                       String zoneStartNode = getBestStartNode(startZone, endNodeId);
+                       
+                       System.out.println("It's best to start from: " + zoneStartNode);
+                       
+                       /*Add connections to this secondary to the map, and build it. 
+                        *This method will build a new map everytime with just the connections
+                        *to the secondary that it's checking right now.
+                        */
+                       finishBuildingMap(secondary);
+                       
+                       /*Now find the cost from the start node to the end node
+                        *Get and save the cost it would take using the path from 
+                        *the best start node in the Zone to the current secondary exit being
+                        *examined.
+                       */
+                       double costUsingCurrentSecondary = map.costFromTo(zoneStartNode, endNodeId);
+                       System.out.println("The from " + zoneStartNode + " to " + endNodeId + " is " + costUsingCurrentSecondary);
+                       
+                       
+                       /* If the path leading to the destination would be shorter than
+                          the current best path...
+                          update the best start and end nodes to the currently examined start/end nodes.
+                          Of course, update the best cost as well.      
+                       */
+                       
+                       if(costUsingCurrentSecondary < bestCost){
+                           System.out.print("YES! It's better. Best START: " + zoneStartNode);
+                           System.out.print(" Best SECONDARY matching SEARCH: " + secondary.getId());
+                           System.out.println(" Best COST is now: " + costUsingCurrentSecondary);
+                           
+                           bestStartNode = zoneStartNode;
+                           bestMatchingSecondary = secondary;
+                           bestCost = costUsingCurrentSecondary;
+                       }                
+                   }
+               }
+           }
+       }
+       
+        if(bestMatchingSecondary != null){
+            //No need to build the map again, because now the map should be built with
+            //only the best secondary exit to the destination
+            
+            //Returns the start/end pair that should be used for the search.
+            return new StartEndStringPair(bestStartNode, bestMatchingSecondary.getId());
+            
+        }else{
+            throw new Exception(userSearch + ": NO SECONDARY EXIT FOUND FOR LOCATION");
+        }
+        
+    }
+    
+    private void finishBuildingMap(SecondaryExit secondary){
+        for(HashMap.Entry entry: secondary.getFromToPrimaryMap().entrySet()){
+            map.addEdgeToGraph(secondary.getId(), ((PrimaryExit) entry.getKey()).getId(), (double) entry.getValue());                     
+        }
+        map.buildGraph();
+    } 
+     
     private String prepareUserSearchAndGetEndNode(String userSearch) throws Exception{
         /* Does two things:
          * 1. Takes in the physical name of a location a USER would search for,
@@ -276,5 +407,17 @@ public class IndoorSearchSimulator{
     }
     
     
+    
+}
+
+
+class StartEndStringPair{
+    public final String startNode;
+    public final String endNode;
+    
+    public StartEndStringPair(String start, String end){
+        startNode = start;
+        endNode = end;
+    }
     
 }

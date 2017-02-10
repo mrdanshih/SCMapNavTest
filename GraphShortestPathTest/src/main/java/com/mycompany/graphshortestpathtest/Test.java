@@ -15,9 +15,10 @@ public class Test {
         //Searches with the best node
         
         //LINKED LIST
-        String startZone = "Zone 5";
-        String userSearch = "Computer Lab Side";
+        String startZone = "Zone 1";
+        String userSearch = "Computer Lab";
         //If you search for same name/ multiple secondary exits to same destination, doesn't return shortest path. Find way to fix?????
+        System.out.println("START: " + startZone + " END: " + userSearch);
         
         ArrayList<LinkedList<String>> paths = (ArrayList) simulator.getDirections(startZone, userSearch);
         System.out.println(paths.get(0));
