@@ -1,12 +1,13 @@
 package com.mycompany.graphshortestpathtest;
 
+import es.usc.citius.hipster.algorithm.Algorithm.SearchResult;
 import es.usc.citius.hipster.algorithm.Hipster;
 import es.usc.citius.hipster.graph.GraphBuilder;
 import es.usc.citius.hipster.graph.GraphSearchProblem;
 import es.usc.citius.hipster.graph.HipsterGraph;
 import es.usc.citius.hipster.model.impl.WeightedNode;
 import es.usc.citius.hipster.model.problem.SearchProblem;
-import java.util.List;
+import java.util.LinkedList;
 
 public class Searcher {
     private final GraphBuilder<String,Double> graphTemplate;
@@ -86,7 +87,7 @@ public class Searcher {
         return (double) (node.getCost());
     }
     
-    public List searchFromTo(String start, String end){
+    public NavigationResult searchFromTo(String start, String end){
         /*
          * Returns a list of shortest paths (if there is more than one best one),
          * containing lists with the individual steps/nodes along that path,
@@ -102,11 +103,12 @@ public class Searcher {
                                 .in(graph)
                                 .takeCostsFromEdges()
                                 .build();
-
-        return Hipster.createDijkstra(problem).search(end).getOptimalPaths();
+        
+        SearchResult hipsterResult = Hipster.createDijkstra(problem).search(end);
+        WeightedNode node = (WeightedNode) hipsterResult.getGoalNode();
+        
+        NavigationResult result = new NavigationResult( (LinkedList) hipsterResult.getOptimalPaths().get(0), (double) node.getCost());
+        return result;
     }
-    
-    
-    
-    
 }
+

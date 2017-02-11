@@ -20,6 +20,12 @@ public class IndoorSearchSimulator{
      */
     
     //Zone 1
+      String[] P1Neighbors = {"P2", "Go through white doors to lobby, turn right inside, and walk straight towards doors in hall",
+                              "P10", "Walk straight through the courtyard"};
+      String[] P2Neighbors = {"P1", "Walk straight down the hall, and turn left to go through the doors to outside courtyard",
+                                "P3", "Walk straight forward and go through a blue door",
+                                "P4", "Slant right and walk into the next hallway"};
+                                     
       PrimaryExit P1 = new PrimaryExit("P1");
       PrimaryExit P2 = new PrimaryExit("P2");
 
@@ -35,8 +41,13 @@ public class IndoorSearchSimulator{
 
       //Zone 2
       //P2 ALREADY INSTANTIATED
+      //P3 is useless fo rnow, disregard it sneighbors
+      String[] P4Neighbors = {"P2", "Slant right then turn left at the doors",
+                                "P5", "Walk down hallway to next set of doors"};
+      
       PrimaryExit P3 = new PrimaryExit("P3"); 
       PrimaryExit P4 = new PrimaryExit("P4"); 
+      
       PrimaryExit[] zone2Primaries = {P2, P3, P4};    
 
       //Setting up a secondary exit (physical destination) with associated primaries
@@ -149,7 +160,7 @@ public class IndoorSearchSimulator{
       Searcher map = new Searcher();
     
       
-    public List getDirections(String detectedStartZone, String userSearch) throws Exception{
+    public NavigationResult getDirections(String detectedStartZone, String userSearch) throws Exception{
         /* Algorithm used to get directions:
             1. The phone would report a zone that it is in, and a user would 
                 have specified a destination location.
@@ -173,6 +184,7 @@ public class IndoorSearchSimulator{
         }
         
         StartEndStringPair fromToPair = prepareSearchAndGetStartEndNodes(startZone, userSearch);
+        
         return map.searchFromTo(fromToPair.startNode, fromToPair.endNode);
     }
     
@@ -217,7 +229,6 @@ public class IndoorSearchSimulator{
                    if(secondaryPhysicalLocation.equals(userSearch)){
                        //Found a secondary exit node that leads to the destination
                        String endNodeId = secondary.getId();
-                       System.out.println("A corresponding secondary is: " + endNodeId);
                        
                        /*Add connections to this secondary to the map, and build it. 
                         *This method will build a new map everytime with just the connections
@@ -232,9 +243,7 @@ public class IndoorSearchSimulator{
                          start node in the same Zone may change. Thus, this needs to be
                          redone for EVERY secondary exit that matches the physical destination.
                        */
-                       String zoneStartNode = getBestStartNode(startZone, endNodeId);
-                       
-                       System.out.println("It's best to start from: " + zoneStartNode);
+                       String zoneStartNode = getBestStartNode(startZone, endNodeId);      
                        
                        /*Now find the cost from the start node to the end node
                         *Get and save the cost it would take using the path from 
@@ -242,9 +251,7 @@ public class IndoorSearchSimulator{
                         *examined.
                        */
                        double costUsingCurrentSecondary = map.costFromTo(zoneStartNode, endNodeId);
-                       System.out.println("Cost from " + zoneStartNode + " to " + endNodeId + " is " + costUsingCurrentSecondary);
-                       
-                       
+
                        /* If the path leading to the destination would be shorter than
                           the current best path...
                           update the best start and end nodes to the currently examined start/end nodes.
@@ -252,10 +259,6 @@ public class IndoorSearchSimulator{
                        */
                        
                        if(costUsingCurrentSecondary < bestCost){
-                           System.out.print("YES! It's better. Best START: " + zoneStartNode);
-                           System.out.print(" Best SECONDARY matching SEARCH: " + secondary.getId());
-                           System.out.println(" Best COST is now: " + costUsingCurrentSecondary);
-                           
                            bestStartNode = zoneStartNode;
                            bestMatchingSecondary = secondary;
                            bestCost = costUsingCurrentSecondary;
