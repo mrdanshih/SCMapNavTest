@@ -20,6 +20,12 @@ public class IndoorSearchSimulator{
      */
     
     //Zone 1
+      String[] P1Neighbors = {"P2", "Go through white doors to lobby, turn right inside, and walk straight towards doors in hall",
+                              "P10", "Walk straight through the courtyard"};
+      String[] P2Neighbors = {"P1", "Walk straight down the hall, and turn left to go through the doors to outside courtyard",
+                                "P3", "Walk straight forward and go through a blue door",
+                                "P4", "Slant right and walk into the next hallway"};
+                                     
       PrimaryExit P1 = new PrimaryExit("P1");
       PrimaryExit P2 = new PrimaryExit("P2");
 
@@ -36,6 +42,8 @@ public class IndoorSearchSimulator{
       //Zone 2
       //P2 ALREADY INSTANTIATED
       //P3 is useless fo rnow, disregard it sneighbors
+      String[] P4Neighbors = {"P2", "Slant right then turn left at the doors",
+                                "P5", "Walk down hallway to next set of doors"};
       
       PrimaryExit P3 = new PrimaryExit("P3"); 
       PrimaryExit P4 = new PrimaryExit("P4"); 

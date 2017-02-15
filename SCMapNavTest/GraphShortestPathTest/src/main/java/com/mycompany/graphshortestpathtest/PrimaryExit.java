@@ -13,6 +13,7 @@ import java.util.HashMap;
 public class PrimaryExit { 
     //Identifier for the primary exit, and a description for it?? (necessary to have both?)
     private String strId, description;
+    private HashMap<String, String> directionsToNeighbors = null;
     
 //    public PrimaryExit(String id, String[] initiationList){
 //        this.strId = id;
